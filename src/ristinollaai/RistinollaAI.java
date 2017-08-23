@@ -17,7 +17,7 @@ public class RistinollaAI {
      */
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        Ristinolla game = new Ristinolla(4, true);
+        Ristinolla game = new Ristinolla(3, true);
         
         System.out.println("1.Person vs Person");
         System.out.println("2.Person vs AI");
