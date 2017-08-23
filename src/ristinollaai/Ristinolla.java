@@ -5,6 +5,8 @@
  */
 package ristinollaai;
 
+import static sun.swing.MenuItemLayoutHelper.max;
+
 /**
  *
  * @author max
@@ -185,7 +187,54 @@ public class Ristinolla {
         return moves2;
     }
     
-    
+    public int evalMove(Move move){
+        if(checkForWin()) return 100;
+        
+        char moveMaker = board[move.row][move.col];
+        int cownMarks, coppMarks, cempties;
+        cownMarks = coppMarks = cempties =0;
+        //Count moves column marks
+        for(int i = 0; i<board.length; i++){
+            if(board[i][move.col] == '.') cempties++;
+            else if(board[i][move.col] == moveMaker) cownMarks++;
+            else coppMarks++;
+        }
+        
+        int rownMarks, roppMarks, rempties;
+        rownMarks = roppMarks = rempties = 0;
+        //Count row marks
+        for(int i=0; i<board.length; i++){
+            if(board[move.row][i] == '.') rempties++;
+            else if(board[move.row][i] == moveMaker) rownMarks++;
+            else roppMarks++;
+        }
+        
+        int downMarks, doppMarks, dempties, downMarks2, doppMarks2, dempties2;
+        downMarks = doppMarks = dempties = downMarks2 = doppMarks2 = dempties2 =0;
+        if(move.row == move.col || move.row + move.col == board.length-1){
+            if(move.row == move.col){
+                for(int i=0; i<board.length; i++){
+                    if(board[i][i] == '.') dempties++;
+                    else if(board[i][i] == moveMaker) downMarks++;
+                    else doppMarks++;
+                }
+            }
+            if(move.row + move.col == board.length-1){
+                for(int i=0, j=board.length-1; i<board.length; i++, j--){
+                    if(board[j][i] == '.')dempties2++;
+                    else if(board[j][i] == moveMaker) downMarks2++;
+                    else doppMarks2++;
+                }
+            }
+        }
+        int significantOwnMarks = max(rownMarks, downMarks, downMarks2, cownMarks);
+        int significantOppMarks = max(roppMarks, doppMarks, doppMarks2, coppMarks);
+        int significantEmpties = max(rempties, dempties, dempties2, cempties);
+        if(significantOppMarks >= significantOwnMarks) return significantOppMarks * 4;
+        else if (significantOwnMarks > significantOppMarks) return significantOwnMarks * 2;
+        else return 1;
+        
+    }
 }
 
 

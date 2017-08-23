@@ -61,8 +61,9 @@ public class GameController {
                 targetCol = sc.nextInt();
                 mvToMake = new Move(targetRow, targetCol);
             }
-            if(!game.makeMove(mvToMake)) System.out.println("Illegal move!");
+            if(!game.makeMove(mvToMake)) System.out.println("Illegal move! " + mvToMake.row + mvToMake.col);
             else{
+                System.out.println("Move eval:" + game.evalMove(mvToMake)); 
                 game.getMoves2().deleteMove(mvToMake);
                 if(game.checkForWin()){
                     game.printBoard();
@@ -102,6 +103,7 @@ public class GameController {
                     gameOngoing = false;
                     System.out.println("Draw!");
                 }
+                System.out.println("Move eval:" + game.evalMove(new Move(targetRow, targetCol)));
                 game.printBoard();
             }
         }
