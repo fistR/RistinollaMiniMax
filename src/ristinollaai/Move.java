@@ -1,21 +1,35 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ristinollaai;
 
 /**
- *
+ * This is the class for the Move object, consisting
+ * only of a row and a col index. This exists for convenience.
  * @author max
  */
 public class Move {
-    public int row;
-    public int col;
+    private int row;
+    private int col;
     
+    /* Default constructor */
     public Move(int row, int col){
         this.row = row;
         this.col = col;
     }
+
+    public int getRow() {
+        return row;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
+    public void setCol(int col) {
+        this.col = col;
+    }
+    
     
 }

@@ -1,14 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ristinollaai;
 
 import static sun.swing.MenuItemLayoutHelper.max;
 
 /**
- *
+ * This is the Ristinolla/Tic-Tac-Toe game class. 
+ * It contains the board(2d char array), the state of the game
+ * and available moves. The board consists of empty spaces '.',
+ * 'x' marks, and 'o' marks.
+ * spacesLeft is always up to date by being incremented at the 
+ * appropriate times. The current player represents the player
+ * who will place the next mark.
  * @author max
  */
 public class Ristinolla {
@@ -19,6 +20,13 @@ public class Ristinolla {
     private DoubleLinkList availableMoves;
     private DoubleLinkList moves2;
     
+    /**
+     * Constructor. Give the size of the game board
+     * and whether or not x goes first or 'o' goes first.
+     * x is recommended as is the default for tic-tac-toe.
+     * @param size
+     * @param xGoesFirst 
+     */
     public Ristinolla(int size, boolean xGoesFirst){
         board = new char[size][size];
         if(xGoesFirst) currentPlayer = 'x';
@@ -29,6 +37,11 @@ public class Ristinolla {
         initBoard(size);
     }
     
+    /**
+     * Method for printing the board onto the console.
+     * It will print the board array separated by --- and |
+     * to look sort of like a tic-tac-toe board.
+     */
     public void printBoard(){
         
         System.out.print("-");
@@ -45,7 +58,10 @@ public class Ristinolla {
             System.out.println("----");
         }
     }
-    
+    /**
+     * Method for initializing the board with all empty marks.
+     * @param size 
+     */
     public void initBoard(int size){
         for(int i = 0; i<size; i++){
             for(int j = 0; j<size; j++){
@@ -55,19 +71,83 @@ public class Ristinolla {
             }
         }
     }
+    /**
+     * This method returns a list of the available moves left.
+     * This is needed to always have the right order list
+     * due to minimax iterating. Getting rid of this and replacing
+     * the moves list with perhaps a self organizing heap might 
+     * improve performance.
+     * @return 
+     */
+    public DoubleLinkList calcAvailableMoves(){
+        DoubleLinkList moves = new DoubleLinkList();
+        for(int i=0; i<board.length; i++){
+            for(int j=0; j<board.length; j++){
+                if(board[i][j] == '.')moves.insertLast(new Move(i,j));
+            }
+        }
+        return moves;
+    }
+    /**
+     * Method for getting the remaining available moves
+     * so that they are roughly sorted for move-ordering
+     * in the minmax ab pruning algorithm to improve performance.
+     * Is not currently used as it does not improve performance.
+     * @return 
+     */
+    public DoubleLinkList calcAvailableMovesSorted(){
+        DoubleLinkList moves = new DoubleLinkList();
+        for(int i=0; i<board.length; i++){
+            for(int j=0; j<board.length; j++){
+                if(board[i][j] == '.'){
+                    Move mv = new Move(i,j);
+                    placeMark(mv.getRow(), mv.getCol());
+                    if(moves.size == 0) moves.insertFirst(mv);
+                    else if(GameController.evalMove(mv, board) >= GameController.evalMove(moves.getNode(1).obj, board)){
+                        moves.insertFirst(mv);
+                    }
+                    else if(GameController.evalMove(mv, board) <= GameController.evalMove(moves.tail.obj, board)){
+                        moves.insertLast(mv);
+                    } else {
+                        //moves.insertAt(mv, (int)moves.size/2);
+                        moves.insertLast(mv);
+                    }
+                    removeMark(mv.getRow(),mv.getCol());
+                    
+                    
+                }
+            }
+        }
+        return moves;
+    }
     
+    /**
+     * Method for checking if the game is over by no
+     * more availabe spaces.
+     * @return 
+     */
     public boolean isBoardFull(){
         if(spacesLeft > 0) return false;
         else return true;
     }
-    
-    public boolean checkForWin(){
-        boolean re = (checkRowsForWin() || checkColsForWin() || checkDiagForWin());
+    /**
+     * This method checks if there is a winner by separate functions
+     * checking rows, columns and diagonals. If any are true there is a winner
+     * @param board
+     * @return 
+     */
+    public static boolean checkForWin(char[][] board){
+        boolean re = (checkRowsForWin(board) || checkColsForWin(board) || checkDiagForWin(board));
         //if(re) System.out.println("Winning combo found for " + ((currentPlayer == 'o') ? 'x' : 'o'));
         return re;
     }
     
-    public boolean checkRowsForWin(){
+    /**
+     * Method to check if any row contains a win.
+     * @param board
+     * @return 
+     */
+    public static boolean checkRowsForWin(char[][] board){
         boolean hasWin, hasX, hasE, hasO;
         hasWin = false;
         for(int i = 0; i<board.length; i++){
@@ -84,7 +164,12 @@ public class Ristinolla {
         return hasWin;
     }
  
-    public boolean checkColsForWin(){
+    /**
+     * Method to check if any column contains a win
+     * @param board
+     * @return 
+     */
+    public static boolean checkColsForWin(char[][] board){
         boolean hasWin, hasX, hasE, hasO;
         hasWin = false;
         for(int i = 0; i<board.length; i++){
@@ -99,8 +184,12 @@ public class Ristinolla {
         }
         return hasWin;
     }
-    
-    public boolean checkDiagForWin(){
+    /**
+     * Method to check if any Diagonal contains a win
+     * @param board
+     * @return 
+     */
+    public static boolean checkDiagForWin(char[][] board){
         boolean hasWin, hasX, hasE, hasO;
         hasWin = hasX = hasE = hasO = false;
         for(int i=0; i<board.length;i++){
@@ -119,18 +208,33 @@ public class Ristinolla {
         }
         return hasWin;
     }
-    
-    public boolean compareMarks(boolean hasX, boolean hasE, boolean hasO){
+    /**
+     * This method is used by the winning condition checking functions
+     * to see if a col/row/diag has only of one type of character.
+     * @param hasX
+     * @param hasE
+     * @param hasO
+     * @return 
+     */
+    public static boolean compareMarks(boolean hasX, boolean hasE, boolean hasO){
             if(hasX && !hasO && !hasE) return true;
             else if (!hasX && hasO && !hasE) return true;
             else return false;
     }
-    
+    /**
+     * Change the active player.
+     */
     public void changeTurn(){
         if(currentPlayer == 'x') currentPlayer = 'o';
         else currentPlayer = 'x';
     }
-    
+    /**
+     * Place a mark. The mark will be that of
+     * the current active player.
+     * @param row
+     * @param col
+     * @return 
+     */
     public boolean placeMark(int row, int col){
         if((row >= 0) && (row < board.length)){
             if((col >= 0) && (col < board.length)){
@@ -147,20 +251,31 @@ public class Ristinolla {
         return false;
     }
     
+    /**
+     * Remove a mark at a given location.
+     * @param row
+     * @param col
+     * @return 
+     */
     public boolean removeMark(int row, int col){
         if((row >= 0) && (row < board.length)){
             if((col >= 0) && (col < board.length)){
                 board[row][col] = '.';
-                availableMoves.insertLast(new Move(row,col));
+                availableMoves.insertFirst(new Move(row,col));
                 spacesLeft++;
                 return true;
             }
         }
         return false;
     }
+    /**
+     * Make a move. placeMark is called for this.
+     * @param move
+     * @return 
+     */
     public boolean makeMove(Move move){
         availableMoves.deleteMove(move);
-        return placeMark(move.row, move.col);
+        return placeMark(move.getRow(), move.getCol());
     }
 
     public char[][] getBoard() {
@@ -187,54 +302,9 @@ public class Ristinolla {
         return moves2;
     }
     
-    public int evalMove(Move move){
-        if(checkForWin()) return 100;
-        
-        char moveMaker = board[move.row][move.col];
-        int cownMarks, coppMarks, cempties;
-        cownMarks = coppMarks = cempties =0;
-        //Count moves column marks
-        for(int i = 0; i<board.length; i++){
-            if(board[i][move.col] == '.') cempties++;
-            else if(board[i][move.col] == moveMaker) cownMarks++;
-            else coppMarks++;
-        }
-        
-        int rownMarks, roppMarks, rempties;
-        rownMarks = roppMarks = rempties = 0;
-        //Count row marks
-        for(int i=0; i<board.length; i++){
-            if(board[move.row][i] == '.') rempties++;
-            else if(board[move.row][i] == moveMaker) rownMarks++;
-            else roppMarks++;
-        }
-        
-        int downMarks, doppMarks, dempties, downMarks2, doppMarks2, dempties2;
-        downMarks = doppMarks = dempties = downMarks2 = doppMarks2 = dempties2 =0;
-        if(move.row == move.col || move.row + move.col == board.length-1){
-            if(move.row == move.col){
-                for(int i=0; i<board.length; i++){
-                    if(board[i][i] == '.') dempties++;
-                    else if(board[i][i] == moveMaker) downMarks++;
-                    else doppMarks++;
-                }
-            }
-            if(move.row + move.col == board.length-1){
-                for(int i=0, j=board.length-1; i<board.length; i++, j--){
-                    if(board[j][i] == '.')dempties2++;
-                    else if(board[j][i] == moveMaker) downMarks2++;
-                    else doppMarks2++;
-                }
-            }
-        }
-        int significantOwnMarks = max(rownMarks, downMarks, downMarks2, cownMarks);
-        int significantOppMarks = max(roppMarks, doppMarks, doppMarks2, coppMarks);
-        int significantEmpties = max(rempties, dempties, dempties2, cempties);
-        if(significantOppMarks >= significantOwnMarks) return significantOppMarks * 4;
-        else if (significantOwnMarks > significantOppMarks) return significantOwnMarks * 2;
-        else return 1;
-        
-    }
+    
+    
+
 }
 
 

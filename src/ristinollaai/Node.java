@@ -1,24 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ristinollaai;
 
 /**
- *
+ * This is a move-specific Node implementation
+ * for a Doubly Lined List.
  * @author max
  */
 public class Node {
     protected Move obj;
     protected Node next, prev;
-    
+    /* Default constructor initializes everything to null */
     public Node(){
         next = null;
         prev = null;
         obj = null;
     }
     
+    /* Parameterized constructor initializes by given values */
     public Node(Move obj, Node ne, Node pr){
         this.obj = obj;
         this.next = ne;

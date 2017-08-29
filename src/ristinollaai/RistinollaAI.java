@@ -1,13 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ristinollaai;
 import java.util.Scanner;
 
 /**
- *
+ * This is a short Data Structures and Algorithms project. The subject
+ * is a minimax AI with AB pruning for Tic-Tac-Toe (Ristinolla).
+ * 
+ * You can play with people, versus the AI, or have AI play itself.
+ * Minimax algorithm is compared with and without AB pruning easily, 
+ * and the difference is quite noticeable.
  * @author max
  */
 public class RistinollaAI {
@@ -17,8 +17,11 @@ public class RistinollaAI {
      */
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        Ristinolla game = new Ristinolla(3, true);
-        
+        System.out.println("Size of board(3-5 best):");
+        int opt = sc.nextInt();
+        System.out.println("Enable AB pruning? default: y (y/n):");
+        GameController.prune = (sc.next().charAt(0) == 'n' ? false : true);
+        Ristinolla game = new Ristinolla(opt, true);
         System.out.println("1.Person vs Person");
         System.out.println("2.Person vs AI");
         System.out.println("3. AI vs AI");
