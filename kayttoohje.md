@@ -2,6 +2,7 @@
 
 ## Running
 The program is run by executing the jar file. It will terminate once it is done.
+You can find the jar in the dist directory or by downloading the release.
 
 ## Inputs
 When asked to submit input, make sure to press the key you intended. You cannot
