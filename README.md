@@ -1,1 +1,2 @@
 # RistinollaMiniMax
+[Instructions](kayttoohje.md)
