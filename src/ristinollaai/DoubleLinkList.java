@@ -73,6 +73,7 @@ public class DoubleLinkList {
      * A method for inserting an object at 
      * a given location. If the location is out of bounds
      * the object is inserted last.
+     * NOT USED, NOT FINISHED
      * @param obj
      * @param pos 
      */
@@ -200,7 +201,32 @@ public class DoubleLinkList {
         }
         return null;
     }
+
+    public Node getHead() {
+        return head;
+    }
+
+    public void setHead(Node head) {
+        this.head = head;
+    }
+
+    public Node getTail() {
+        return tail;
+    }
+
+    public void setTail(Node tail) {
+        this.tail = tail;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
  
+    
     
     
 }

@@ -83,7 +83,7 @@ public class MiniMaxAI {
      */
     public static int minimaxMoveAB2(Ristinolla game, DoubleLinkList moves, char maximizingPlayer, int depth, int a, int b, Move lastMove, int score, boolean prune){
         /* Check for game end and score accordingly */
-        if(depth == 0 || Ristinolla.checkForWin(game.getBoard()) || game.getSpacesLeft() == 0){
+        if(depth == 0 || Ristinolla.checkForWin(game.getBoard()) || game.isBoardFull()){
             if(Ristinolla.checkForWin(game.getBoard()) && game.getCurrentPlayer() == maximizingPlayer) return -100-depth;
             else if(Ristinolla.checkForWin(game.getBoard())) return 100+depth;
             if(game.getSpacesLeft() == 0) return 0-depth + ((game.getCurrentPlayer() == maximizingPlayer) ? -GameController.evalMove(lastMove, game.getBoard()) : GameController.evalMove(lastMove, game.getBoard()));

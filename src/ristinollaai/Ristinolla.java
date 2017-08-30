@@ -123,7 +123,7 @@ public class Ristinolla {
     
     /**
      * Method for checking if the game is over by no
-     * more availabe spaces.
+     * more available spaces.
      * @return 
      */
     public boolean isBoardFull(){

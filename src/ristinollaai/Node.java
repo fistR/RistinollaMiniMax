@@ -30,7 +30,7 @@ public class Node {
         this.prev = p;
     }
 
-    public Object getObj() {
+    public Move getObj() {
         return obj;
     }
 
