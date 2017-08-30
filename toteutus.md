@@ -25,9 +25,10 @@ In practice it seems most of the tree does not need to be searched as the next s
 ## With vs Without AB Pruning
 To see approximately how much AB pruning helps the minimax algorithm in this case I have run on my laptop a series of test runs. They were all run with depth set to 5. This is AI vs AI total time from first decision to last. Every result was a draw. More than 5x5 there is no point in measuring since without AB pruning it is too long for reason.
 
-AB   3x3         4x4        5x5  
-Yes  49ms    430ms       2724ms  
-No   102ms  10766ms  369937ms  
+AB  | 3x3  |       4x4 |       5x5
+--- | --- | --- | ---
+Yes |  49ms  |  430ms    |   2724ms  
+No  | 102ms | 10766ms | 369937ms  
 
 This is a quadratic difference in performance as the size of the game board increases. A simple polynomial regression on the above data points yields the following curve: **y = -256 + 4.97x + 0.048x^2**
 
